@@ -4,7 +4,7 @@ This repository contains the implementation of a novel approach to **playlist ge
 
 The repository includes code for preprocessing, model training, evaluation, and generating recommendations. For more detail, please refer to the [paper](#citation) and the [slides](https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm).
 
-
+<a href="https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm/edit?usp=sharing&ouid=115943922619032699910&rtpof=true&sd=true"><img width="605" height="334" alt="Presentation @RecSys2025" src="https://github.com/user-attachments/assets/9a366394-2cde-47ec-9988-8ad6780813fc" /></a>
 
 **Related links**
 - [Online demo](https://playlist-recommendation.tools.eurecom.fr/) - [code](https://github.com/elea-vellard/DEMO-playlist-continuation)
@@ -96,6 +96,3 @@ Enzo Charolois–Pasqua, Eléa Vellard, Youssra Rebboud, Pasquale Lisena, and Ra
 In *Proceedings of the Nineteenth ACM Conference on Recommender Systems (RecSys ’25)*,
 September 22–26, 2025, Prague, Czech Republic. ACM, New York, NY, USA, 11 pages.
 https://doi.org/10.1145/3705328.3748053
-
-<a href="https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm/edit?usp=sharing&ouid=115943922619032699910&rtpof=true&sd=true"><img width="605" height="334" alt="Presentation @RecSys2025" src="https://github.com/user-attachments/assets/9a366394-2cde-47ec-9988-8ad6780813fc" /></a>
-
