@@ -21,12 +21,12 @@ from ranker import rank_playlist, load_prompt
 # Available LLMs to test
 AVAILABLE_LLMS = {
     "llama3.1": {"description": "Ollama (llama3.1)"},
+    "llama3.2": {"description": "Ollama (llama3.2)"},
     "mistral-large": {"description": "Ollama (mistral-large)"},
-    "mistral-tiny": {"description": "Ollama (mistral-tiny)"},
-    "zephyr-latest": {"description": "Ollama (zephyr:latest)"},
-    "gemma-latest": {"description": "Ollama (gemma:latest)"},
-    "qwen": {"description": "Ollama (qwen:latest)"},
-    "t5": {"description": "Ollama (t5:latest)"},
+    "mistral-small3.2": {"description": "Ollama (mistral-small3.2)"},
+    "zephyr": {"description": "Ollama (zephyr)"},
+    "gemma3": {"description": "Ollama (gemma3)"},
+    "qwen3": {"description": "Ollama (qwen3)"},
     "gpt4o": {"description": "OpenAI"},
     "gpt41": {"description": "OpenAI"},
     "gemini": {"description": "Google"},
@@ -36,27 +36,28 @@ AVAILABLE_LLMS = {
 # Map user-friendly names to Ollama model IDs
 MODEL_ALIASES = {
     "llama3.1": "llama3.1",
+    "llama3.2": "llama3.2",
     "mistral-large": "mistral-large",
-    "mistral-tiny": "mistral-tiny",
-    "zephyr-latest": "zephyr:latest",
-    "gemma-latest": "gemma:latest",
-    "qwen": "qwen:latest",
-    "t5": "t5:latest",
+    "mistral-small3.2": "mistral-small3.2",
+    "zephyr": "zephyr",
+    "gemma3": "gemma3",
+    "qwen3": "qwen3",
 }
 
 
 # Default LLMs to use
 DEFAULT_LLMS = [
     "llama3.1",
+    "llama3.2",
     "mistral-large",
-    "mistral-tiny",
-    "zephyr-latest",
-    "gemma-latest",
+    "mistral-small3.2",
+    "zephyr",
+    "gemma3",
     "gpt4o",
     "gpt41",
     "gemini",
-    "qwen",
-    "t5",
+    "claude-latest",
+    "qwen3",
 ]
 
 
