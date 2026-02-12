@@ -6,7 +6,8 @@ The repository includes code for preprocessing, model training, evaluation, and 
 
 <a href="https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm/edit?usp=sharing&ouid=115943922619032699910&rtpof=true&sd=true"><img width="605" height="334" alt="Presentation @RecSys2025" src="https://github.com/user-attachments/assets/9a366394-2cde-47ec-9988-8ad6780813fc" /></a>
 
-**Related links**
+#### Related links
+
 - [Online demo](https://playlist-recommendation.tools.eurecom.fr/) - [code](https://github.com/elea-vellard/DEMO-playlist-continuation)
 - [Zenodo repository](https://zenodo.org/records/15837980) including the best trained model.
 
@@ -46,7 +47,7 @@ Finally, randomly split the clusters, ensuring a representation of each cluster 
 python3 clustering-no-split/split/split.py
 ```
 
-## 3. Finetuning
+## 3. Fine-tuning
 
 Train the SentenceBERT model with two loss functions (cross-entropy and triplet loss) to better capture thematic similarities:
 

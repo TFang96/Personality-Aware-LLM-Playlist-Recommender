@@ -3,6 +3,7 @@
 #######################################
 
 import os
+import argparse
 import torch
 import pickle
 from sklearn.metrics.pairwise import cosine_similarity
@@ -174,11 +175,22 @@ def compute_metrics(recommended_songs, relevant_songs, top_n=10):
 # 8) Main Function
 ########################################
 def main():
-    model_dir = "/home/vellard/playlist_continuation/fine_tuned_model_no_scheduler_2"
-    playlist_embeddings_file = "/home/vellard/playlist_continuation/playlists_embeddings/final_embeddings/playlists_embeddings_scheduler.pkl"
-    items_csv = "/data/csvs/items.csv"
-    tracks_csv = "/data/csvs/tracks.csv"
-    playlists_csv = "/data/csvs/playlists.csv"
+    parser = argparse.ArgumentParser(description="Playlist Recommender Script")
+    parser.add_argument("--model_dir", type=str, default="/home/vellard/playlist_continuation/fine_tuned_model_no_scheduler_2",
+                        help="Directory of the fine-tuned model")
+    parser.add_argument("--playlist_embeddings_file", type=str, default='/home/vellard/playlist_continuation/playlists_embeddings/final_embeddings/playlists_embeddings_scheduler.pkl',
+                        help="Path to the playlist embeddings file")
+    parser.add_argument("--csv_folder", type=str, default='/data/csvs/',
+                        help="Path to the items, tracks and playlists CSV file")
+
+    args = parser.parse_args()
+
+    # Use the arguments in your script
+    model_dir = args.model_dir
+    playlist_embeddings_file = args.playlist_embeddings_file
+    items_csv = os.path.join(args.csv_folder, "items.csv")
+    tracks_csv = os.path.join(args.csv_folder, "tracks.csv")
+    playlists_csv = os.path.join(args.csv_folder, "playlists.csv")
 
     tokenizer, model = load_fine_tuned_model(model_dir)
     print("Loaded tokenizer & fine-tuned model successfully.")
@@ -211,3 +223,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
