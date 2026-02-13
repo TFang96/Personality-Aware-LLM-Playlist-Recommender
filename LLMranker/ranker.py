@@ -1,4 +1,5 @@
 import argparse
+from http import client
 import os
 from pathlib import Path
 from typing import List, Optional
@@ -12,7 +13,7 @@ from pydantic import BaseModel
 
 import openai
 import anthropic
-import google.generativeai as genai
+from google import genai
 
 
 class RankedSong(BaseModel):
@@ -76,10 +77,16 @@ def call_claude(prompt_text: str, model_id: str, temperature: float, api_key: st
 
 def call_gemini(prompt_text: str, model_id: str, temperature: float, api_key: str) -> str:
     if genai is None:
-        raise ImportError("google-generativeai is not installed. Install it to use Gemini models.")
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(model_id)
-    response = model.generate_content(prompt_text, generation_config={"temperature": temperature})
+        raise ImportError("google-genai is not installed. Install it to use Gemini models.")
+    
+    client = genai.Client(api_key=api_key)
+
+    response = client.models.generate_content(
+        model=model_id,
+        contents=prompt_text,
+        temperature=temperature
+    )
+
     return response.text or ""
 
 
@@ -119,6 +126,7 @@ def rank_playlist(
         partial_variables={"format_instructions": format_instructions},
     )
     rendered_prompt = prompt.format(title=title, songs=songs_text)
+    # print(rendered_prompt)
 
     config = load_config(config_path)
 

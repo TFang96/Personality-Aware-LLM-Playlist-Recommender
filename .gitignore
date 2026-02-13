@@ -5,6 +5,8 @@ output
 .idea
 .DS_Store
 config.yaml
+ranking_results
+evaluation_results
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

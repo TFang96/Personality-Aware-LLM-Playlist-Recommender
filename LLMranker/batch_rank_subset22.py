@@ -48,16 +48,16 @@ MODEL_ALIASES = {
 # Default LLMs to use
 DEFAULT_LLMS = [
     "llama3.1",
-    "llama3.2",
-    "mistral-large",
-    "mistral-small3.2",
-    "zephyr",
-    "gemma3",
-    "gpt4o",
-    "gpt41",
-    "gemini",
-    "claude-latest",
-    "qwen3",
+    # # "llama3.2",
+    # # "mistral-large",
+    # # "mistral-small3.2",
+    # "zephyr",
+    # "gemma3",
+    # "gpt4o",
+    # "gpt41",
+    # "gemini",
+    # # "claude-latest",
+    # "qwen3",
 ]
 
 
@@ -103,7 +103,11 @@ def main():
     )
     parser.add_argument(
         '--yaml', default='./subset_22.yml',
-        help="Path to playlists YAML file"
+        help="Path to playlists YAML file (for playlist titles and PIDs)"
+    )
+    parser.add_argument(
+        '--voting-system-dir', default='./similarity/output',
+        help="Directory containing voting system output (top_songs_for_*.csv)"
     )
     parser.add_argument(
         '--output-dir', default='./ranking_results',
@@ -116,6 +120,10 @@ def main():
     parser.add_argument(
         '--list-avail', action='store_true',
         help="List available LLMs and exit"
+    )
+    parser.add_argument(
+        '--timestamp', default=None,
+        help="Timestamp index for this run (default: current datetime"
     )
     
     args = parser.parse_args()
@@ -143,12 +151,20 @@ def main():
     playlists = load_playlists_yaml(args.yaml)
     print(f"Loaded {len(playlists)} playlists\n")
     
+    # Check voting system directory
+    voting_dir = Path(args.voting_system_dir)
+    if not voting_dir.exists():
+        print(f"Error: Voting system directory not found: {voting_dir}")
+        return 1
+    
     # Create base output directory
     base_output = Path(args.output_dir)
     base_output.mkdir(parents=True, exist_ok=True)
     
     # Timestamp for this run
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = args.timestamp
+    if timestamp is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # Process each LLM
     results_summary = {}
@@ -177,24 +193,39 @@ def main():
             print(f"  [{idx}/{len(playlists)}] {title} (PID: {pid})...", end=' ', flush=True)
             
             try:
-                # Get songs for this playlist
-                songs = playlist.get('tracks')
+                # Load songs from voting system output
+                voting_csv = voting_dir / f"top_songs_for_{pid}.csv"
                 
-                if not songs:
-                    print(f"✗ No tracks found")
+                if not voting_csv.exists():
+                    print(f"✗ Voting system output not found: {voting_csv.name}")
                     results_summary[llm_name]["failed"] += 1
-                    results_summary[llm_name]["failures"].append(f"{pid}: no tracks")
+                    results_summary[llm_name]["failures"].append(f"{pid}: no voting system output")
                     continue
                 
-                # Convert songs to DataFrame
-                songs_df = pd.DataFrame([{
-                    'uri': track['uri'],
-                    'song': track['song'],
-                    'artist': track['artist']
-                } for track in songs])
+                # Read voting system recommendations
+                songs_df = pd.read_csv(voting_csv)
+                
+                # Verify required columns exist
+                if not all(col in songs_df.columns for col in ['uri', 'song', 'artist']):
+                    print(f"✗ Invalid CSV format (missing required columns)")
+                    results_summary[llm_name]["failed"] += 1
+                    results_summary[llm_name]["failures"].append(f"{pid}: invalid CSV format")
+                    continue
+                
+                if len(songs_df) == 0:
+                    print(f"✗ No tracks in voting system output")
+                    results_summary[llm_name]["failed"] += 1
+                    results_summary[llm_name]["failures"].append(f"{pid}: empty voting system output")
+                    continue
+                
+                # Keep only required columns
+                songs_df = songs_df[['uri', 'song', 'artist']]
                 
                 # Run ranker
                 output_csv = llm_output_dir / f"ranked_{pid}.csv"
+                if os.path.exists(output_csv):
+                    print(f"✓ Already exists, skipping")
+                    continue
                 model_id = MODEL_ALIASES.get(llm_name, llm_name)
                 success = run_ranker(
                     title=title,

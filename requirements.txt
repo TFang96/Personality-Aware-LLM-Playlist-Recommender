@@ -10,5 +10,5 @@ langchain-ollama
 pandas
 openai
 anthropic
-google-generativeai
+google-genai
 PyYAML
