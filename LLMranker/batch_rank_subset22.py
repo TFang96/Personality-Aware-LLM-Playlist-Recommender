@@ -47,16 +47,16 @@ MODEL_ALIASES = {
 
 # Default LLMs to use
 DEFAULT_LLMS = [
-    "llama3.1",
-    # # "llama3.2",
-    # # "mistral-large",
-    # # "mistral-small3.2",
+    "gpt4o",
+    "gpt41",
+    # "llama3.1",
+    # "llama3.2",
+    # "mistral-large",
+    # "mistral-small3.2",
     # "zephyr",
     # "gemma3",
-    # "gpt4o",
-    # "gpt41",
     # "gemini",
-    # # "claude-latest",
+    # "claude-latest",
     # "qwen3",
 ]
 
@@ -70,7 +70,7 @@ def load_playlists_yaml(yaml_path: str) -> dict:
 
 def run_ranker(title: str, songs_df, output_csv: str, 
                model: str, prompt_path: str = './LLMranker/prompt_ranker.txt',
-               temperature: float = 0.2) -> bool:
+               temperature: float = 0.2, reasoning: bool = False) -> bool:
     """Call rank_playlist function directly."""
     try:
         prompt_text = load_prompt(prompt_path)
@@ -81,7 +81,8 @@ def run_ranker(title: str, songs_df, output_csv: str,
             songs_df=songs_df,
             prompt_text=prompt_text,
             model=model,
-            temperature=temperature
+            temperature=temperature,
+            reasoning=reasoning,
         )
         
         # Save to CSV
@@ -116,6 +117,10 @@ def main():
     parser.add_argument(
         '--temperature', type=float, default=0.2,
         help="LLM temperature parameter"
+    )
+    parser.add_argument(
+        '--reasoning', action='store_true',
+        help="Enable reasoning mode for structured outputs"
     )
     parser.add_argument(
         '--list-avail', action='store_true',
@@ -232,7 +237,8 @@ def main():
                     songs_df=songs_df,
                     output_csv=str(output_csv),
                     model=model_id,
-                    temperature=args.temperature
+                    temperature=args.temperature,
+                    reasoning=args.reasoning,
                 )
                 
                 if success:

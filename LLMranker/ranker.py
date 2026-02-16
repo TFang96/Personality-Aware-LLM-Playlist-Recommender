@@ -25,7 +25,10 @@ class RankedSong(BaseModel):
 
 class RankedSongsList(BaseModel):
     songs: List[RankedSong]  # Wrapper for multiple items
-
+    
+class RankedSongsListReasoning(BaseModel):
+    songs: List[RankedSong]  # Wrapper for multiple items
+    reasoning: Optional[str] = None  # Optional field for LLM to explain rankings
 
 DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config.yaml"
 
@@ -98,6 +101,7 @@ def rank_playlist(
         model: str = "mistral",
         temperature: float = 0.2,
     config_path: Optional[str] = None,
+    reasoning: bool = False,
 ) -> pd.DataFrame:
     """
     Re-rank songs based on relevance to a playlist title using PydanticOutputParser.
@@ -115,11 +119,18 @@ def rank_playlist(
                            for row in songs_df.itertuples(index=False))
 
     # Create Pydantic output parser
-    parser = PydanticOutputParser(pydantic_object=RankedSongsList)
+    parser_model = RankedSongsListReasoning if reasoning else RankedSongsList
+    parser = PydanticOutputParser(pydantic_object=parser_model)
     format_instructions = parser.get_format_instructions()
     # print(format_instructions)
 
     # Prepare prompt
+    if reasoning:
+        prompt_text = (
+            prompt_text
+            + "\n\nSolve the following problem step by step and show your reasoning in the 'reasoning' property."
+        )
+
     prompt = PromptTemplate(
         template=prompt_text,
         input_variables=["title", "songs"],
@@ -165,7 +176,7 @@ def rank_playlist(
         response = f'{{"songs": {response}}}' # Wrap in object for parser
 
     # Parse structured output
-    parsed = parser.parse(response)  # RankedSongsList
+    parsed = parser.parse(response)  # RankedSongsList or RankedSongsListReasoning
 
     # print(parsed)
     # Convert to DataFrame
@@ -194,6 +205,11 @@ def main():
     parser.add_argument("--prompt", default='./prompt_ranker.txt', help="Prompt .txt file")
     parser.add_argument("--model", default="mistral")
     parser.add_argument("--temperature", type=float, default=0.2)
+    parser.add_argument(
+        "--reasoning",
+        action="store_true",
+        help="Use RankedSongsListReasoning response schema",
+    )
 
     args = parser.parse_args()
 
@@ -206,6 +222,7 @@ def main():
         prompt_text=prompt_text,
         model=args.model,
         temperature=args.temperature,
+        reasoning=args.reasoning,
     )
 
     ranked_df.to_csv(args.output, index=False)
