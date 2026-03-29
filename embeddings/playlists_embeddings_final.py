@@ -70,10 +70,12 @@ def compute_and_save_playlist_embeddings(playlists_csv, output_file, tokenizer, 
 ##################
 
 def main():
-    playlists_csv = "/data/csvs/playlists.csv"
-    output_file = "/home/vellard/playlist_continuation/playlists_embeddings/final_embeddings/playlists_embeddings_scheduler.pkl"
+    csv_directory = os.environ.get("CSV_OUTPUT")
+    playlists_csv = os.path.join(csv_directory, "playlists.csv")
+    embedding_dir = os.environ.get("EMBED_DIRECT")
+    output_file = os.path.join(embedding_dir, "playlists_embeddings.pkl")
     # Choose the  model directory
-    finetuned_model_dir = "/home/vellard/playlist_continuation/fine_tuned_model_no_scheduler_2"
+    finetuned_model_dir = os.environ.get("TRIPLET_MODEL")
 
     tokenizer, model, device = load_fine_tuned_model(finetuned_model_dir)
     print("Loaded fine-tuned classification model (with updated weights).")

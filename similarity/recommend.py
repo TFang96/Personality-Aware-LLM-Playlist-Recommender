@@ -175,12 +175,13 @@ def compute_metrics(recommended_songs, relevant_songs, top_n=10):
 # 8) Main Function
 ########################################
 def main():
+    embed_dir = os.environ.get("EMBED_DIRECT")
     parser = argparse.ArgumentParser(description="Playlist Recommender Script")
-    parser.add_argument("--model_dir", type=str, default="/home/vellard/playlist_continuation/fine_tuned_model_no_scheduler_2",
+    parser.add_argument("--model_dir", type=str, default=os.environ.get("FINE_TUNE"),
                         help="Directory of the fine-tuned model")
-    parser.add_argument("--playlist_embeddings_file", type=str, default='/home/vellard/playlist_continuation/playlists_embeddings/final_embeddings/playlists_embeddings_scheduler.pkl',
+    parser.add_argument("--playlist_embeddings_file", type=str, default=os.path.join(embed_dir, "playlists_embeddings.pkl"),
                         help="Path to the playlist embeddings file")
-    parser.add_argument("--csv_folder", type=str, default='/data/csvs/',
+    parser.add_argument("--csv_folder", type=str, default=os.environ.get("CSV_OUTPUT"),
                         help="Path to the items, tracks and playlists CSV file")
 
     args = parser.parse_args()

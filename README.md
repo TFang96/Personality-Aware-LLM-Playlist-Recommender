@@ -32,7 +32,8 @@ python3 clustering-no-split/embeddings/track_embeddings_no-split.py
 Then, the K-means clustering algorithm is applied to create the clusters, and the generated 'csv' file is modified to calculate and include the percentage of exact matches:
 
 ```bash
-python3 clustering-no-split/clusters/clustering-no-split.py clustering-no-split/clusters/percent-no-split.py
+python3 clustering-no-split/clusters/clustering-no-split.py 
+python3 clustering-no-split/clusters/percent-no-split.py
 ```
 
 Apply the clean algorithm to remove miscellaneous clusters:

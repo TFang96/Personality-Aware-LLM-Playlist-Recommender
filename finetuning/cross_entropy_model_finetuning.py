@@ -3,20 +3,26 @@ import evaluate
 import json
 from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
+import os
 
 # Parameters
 MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
-train_csv = '/home/vellard/playlist_continuation/clusters_train.csv'
-val_csv = '/home/vellard/playlist_continuation/clusters_val.csv'
-output_dir = './fine_tuned_model_no_scheduler_2'
+input_dir = os.environ.get("CLUSTER_REPRESENT")
+train_csv = os.path.join(input_dir, 'clusters_train.csv')
+val_csv = os.path.join(input_dir, 'clusters_val.csv')
+output_dir = os.environ.get("FINE_TUNE")
+os.makedirs(output_dir, exist_ok=True)
 batch_size = 8
-epochs = 100
+epochs = 1
 learning_rate = 2e-5
 warmup_steps = 100
 
 #transformation in dataframes
 train_df = pd.read_csv(train_csv, low_memory=False)
 val_df = pd.read_csv(val_csv, low_memory=False)
+
+train_df = train_df.sample(n=5000, random_state=42)
+val_df = val_df.sample(n=500, random_state=42)
 
 train_df['Cluster ID'] = train_df['Cluster ID'].astype(int)
 val_df['Cluster ID'] = val_df['Cluster ID'].astype(int)
@@ -57,8 +63,8 @@ training_args = TrainingArguments(
     num_train_epochs=epochs,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
-    evaluation_strategy="epoch",
-    save_strategy="epoch",
+    eval_strategy="no",
+    save_strategy="no",
     learning_rate=learning_rate,
     weight_decay=0.01,
     load_best_model_at_end=True,

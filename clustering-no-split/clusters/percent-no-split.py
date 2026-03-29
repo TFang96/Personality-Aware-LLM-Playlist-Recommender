@@ -48,30 +48,20 @@ def analyze_clusters_with_exact_matches(input_file, output_file):
 
 # Main function
 def main():
-    input_file = "/home/vellard/malis/clustering-no-split/clusters/200/clusters.csv"
-    output_file = "/home/vellard/malis/clustering-no-split/clusters/200/clusters_with_exact_matches.csv"
+    input_dir = os.environ.get("CLUSTER_OUTPUT")
+    output_dir = os.environ.get("CLUSTER_ANALYSIS")
 
-    analyze_clusters_with_exact_matches(input_file, output_file )
-    
-    print("Clusters with percentages saved to {output_file}")
+    if input_dir is None or output_dir is None:
+        raise ValueError("CLUSTER_OUTPUT and CLUSTER_ANALYSIS must be set.")
 
-# Main function
-def main():
-    input_dir = "/home/vellard/playlist_continuation/clustering-no-split/clusters/200/"
-    output_dir = "/home/vellard/playlist_continuation/clustering-no-split/analysis/200/"
     os.makedirs(output_dir, exist_ok=True)
 
-    analyze_clusters_with_exact_matches(input_dir, output_dir)
-    
-    print("Analysis completed. Enriched CSV files saved to:", output_dir)
-    '''
+    input_file = os.path.join(input_dir, "clusters.csv")
+    output_file = os.path.join(output_dir, "clusters_with_exact_matches.csv")
 
-    for split in ["train", "val", "test"]:
-        input_csv = os.path.join(input_dir, f"clusters_{split}.csv")
-        output_csv = os.path.join(output_dir, f"clusters_{split}_percent.csv")
+    analyze_clusters_with_exact_matches(input_file, output_file)
 
-        print(f"Processing {split} split...")
-        compute_exact_match_percentage(input_csv, output_csv)'''
+    print("Analysis completed. Enriched CSV file saved to:", output_file)
 
 if __name__ == "__main__":
     main()

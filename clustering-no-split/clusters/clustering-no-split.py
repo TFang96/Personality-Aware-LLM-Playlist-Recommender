@@ -31,8 +31,8 @@ def cluster_playlists(playlist_embeddings, num_clusters, playlist_titles, playli
             writer.writerow([label, pid, playlist_titles.get(pid, ""), ";".join(playlist_tracks.get(pid, []))])
 
 def main():
-    embeddings_dir = "/home/vellard/playlist_continuation/embeddings"
-    output_dir = "/home/vellard/playlist_continuation/clustering-no-split/clusters/200"
+    embeddings_dir = os.environ.get("EMBED_DIRECT")
+    output_dir = os.environ.get("CLUSTER_OUTPUT")
     os.makedirs(output_dir, exist_ok=True)
 
     embeddings_file = os.path.join(embeddings_dir, f"embeddings.pkl")

@@ -12,8 +12,11 @@ def clean_clusters(input_file, output_file, threshold):
         # The part with the csv readers/writers has been adapted from chatGPT
         reader = csv.DictReader(infile, delimiter=',')
         fieldnames = reader.fieldnames
+        print(reader.fieldnames)
+
         writer = csv.DictWriter(outfile, fieldnames=fieldnames, delimiter=',')
         writer.writeheader()
+
 
         #Filter the lines based on the threshold
         for row in reader:
@@ -26,10 +29,19 @@ def clean_clusters(input_file, output_file, threshold):
                 continue
 
 def main():
-    clusters_dir = "/home/vellard/playlist_continuation/clustering-no-split/analysis/200/"
-    output_dir = "/home/vellard/playlist_continuation/clustering-no-split/clean/200/"
+    clusters_dir = os.environ.get("CLUSTER_ANALYSIS")
+    output_dir = os.environ.get("CLUSTER_CLEAN")
 
-    filter_clusters_by_exact_match(clusters_dir, output_dir, threshold=2)
+    if clusters_dir is None or output_dir is None:
+        raise ValueError("CLUSTER_ANALYSIS and CLUSTER_CLEAN must be set.")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    input_file = os.path.join(clusters_dir, "clusters_with_exact_matches.csv")
+    output_file = os.path.join(output_dir, "clusters_clean.csv")
+
+    clean_clusters(input_file, output_file, threshold=2)
+
 
 if __name__ == "__main__":
     main()
