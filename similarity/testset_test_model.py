@@ -161,13 +161,16 @@ def compute_metrics(recommended_songs, relevant_songs, top_n=10):
 def main():
     
     # Choose the model directory
-    model_dir = "/home/vellard/playlist_continuation/fine_tuned_model_no_scheduler_2"
+    model_dir = os.environ.get("FINE_TUNE")
+    csv_dir = os.environ.get("CSV_OUTPUT")
+    embed_dir = os.environ.get("EMBED_DIRECT")
+    cluster_represent = os.environ.get("CLUSTER_REPRESENT")
     
-    playlist_embeddings_file = "/home/vellard/playlist_continuation/playlists_embeddings/final_embeddings/playlists_embeddings_scheduler.pkl"
-    items_csv = "/data/csvs/items.csv"
-    tracks_csv = "/data/csvs/tracks.csv"
-    playlists_csv = "/data/csvs/playlists.csv"
-    clusters_test_csv = "/home/vellard/playlist_continuation/clusters/clusters_test.csv"
+    playlist_embeddings_file = os.path.join(embed_dir, "playlists_embeddings.pkl")
+    items_csv = os.path.join(csv_dir, "items.csv")
+    tracks_csv = os.path.join(csv_dir, "tracks.csv")
+    playlists_csv = os.path.join(csv_dir, "playlists.csv")
+    clusters_test_csv = os.path.join(cluster_represent, "clusters_test.csv")
 
     results_csv = "evaluation_results_scheduler.csv"
 

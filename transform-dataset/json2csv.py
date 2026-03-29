@@ -8,8 +8,13 @@ import json
 from os import listdir, path
 
 # Definit input and output paths
-input_dir = '/data/million_playlist_dataset'
-output_dir = '/data/playlist_continuation_data/csvs'
+input_dir = os.environ.get("MDP_INPUT")
+#input_dir = r'C:\Users\SuperT\Documents\Personality-Aware-LLM-Playlist-Recommender\data\data'
+output_dir = os.environ.get("CSV_OUTPUT")
+#output_dir = '/data/playlist_continuation_data/csvs'
+## if input/output directory is not set
+if input_dir is None or output_dir is None:
+    raise ValueError("Error: Verify that input (MDP_INPUT) and output (CSV_OUTPUT) have been set in the environment. ")
 os.makedirs(output_dir, exist_ok=True)#create a new directory to store csv files
 
 # Open files in writing mode
@@ -41,7 +46,7 @@ unique_tracks = set()
 for mpd_slice in listdir(input_dir):
     if mpd_slice.endswith('.json'):
         with open(path.join(input_dir, mpd_slice), encoding='utf8') as json_file:
-            print(f"Lecture du fichier {mpd_slice}...")
+            print(f"Reading file {mpd_slice}...")
             json_slice = json.load(json_file)
 
             # For each playlist in the json file

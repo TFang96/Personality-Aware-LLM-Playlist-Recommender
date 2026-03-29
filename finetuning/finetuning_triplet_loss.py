@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -9,16 +11,20 @@ from tqdm.auto import tqdm
 
 # Parameters
 MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
-train_csv = '/home/vellard/playlist_continuation/clusters_train.csv'
-val_csv = '/home/vellard/playlist_continuation/clusters_val.csv'
-output_dir = './final_triplet_model'
+input = os.environ.get("CLUSTER_REPRESENT")
+train_csv = os.path.join(input, 'clusters_train.csv')
+val_csv = os.path.join(input, 'clusters_val.csv')
+output_dir = os.environ.get("TRIPLET_MODEL")
 batch_size = 8
-epochs = 50
+epochs = 3
 learning_rate = 2e-5
 
 #transformation in dataframes
 train_df = pd.read_csv(train_csv, low_memory=False)
 val_df = pd.read_csv(val_csv, low_memory=False)
+
+train_df = train_df.sample(n=5000, random_state=42)
+val_df = val_df.sample(n=500, random_state=42)
 
 train_df['Cluster ID'] = train_df['Cluster ID'].astype(int)
 val_df['Cluster ID'] = val_df['Cluster ID'].astype(int)
