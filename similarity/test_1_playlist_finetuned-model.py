@@ -119,7 +119,36 @@ def get_top_songs_with_artists(similar_playlists, playlist_tracks, top_k=10):
 
 
 ########################################
-# 7) Evaluation metrics
+# 7) Add diversity constraint to songs recommended
+########################################
+
+def get_diverse_top_songs_with_artists(similar_playlists, playlist_tracks, top_k=10, max_songs_per_artist=1, candidate_pool=50):
+    song_counter = Counter()
+
+    for pid, _ in similar_playlists: ## loop through each tuple in similar playlists
+        pid_str = str(pid) # convert to string 
+        if pid_str in playlist_tracks: # check if the playlist id is present in playlist track dictionary
+            for track_metadata in playlist_tracks[pid_str]: # loop through each track metadata in the playlist 
+                song_counter[(track_metadata["track_name"], track_metadata["artist_name"])] += 1 # increment count of that song and artist
+
+    ranked_songs = song_counter.most_common(candidate_pool) # most common songs
+
+    diverse_results = []
+    artist_counts = Counter() # counts of how many times each artist has been included
+
+    for (song, artist), count in ranked_songs: # loop through all the top songs and artists
+        if artist_counts[artist] < max_songs_per_artist: # if the artist has not yet had the max songs
+            diverse_results.append(((song, artist), count)) # add the song to the diverse results
+            artist_counts[artist] += 1 #increment the count of songs for that artist
+
+        if len(diverse_results) >= top_k: # if we already have the number of wanted songs
+            break
+
+    return diverse_results
+
+
+########################################
+# 8) Evaluation metrics
 ########################################
 
 def compute_metrics(recommended_songs, relevant_songs, top_n=10):
@@ -173,7 +202,7 @@ def compute_metrics(recommended_songs, relevant_songs, top_n=10):
 
 
 ########################################
-# 8) Main Function
+# 9) Main Function
 ########################################
 
 def main():
@@ -217,8 +246,14 @@ def main():
 
     top_songs = get_top_songs_with_artists(top_playlists, playlist_tracks, top_k=10)
 
+    top_diverse_songs = get_diverse_top_songs_with_artists(top_playlists, playlist_tracks, top_k=10, max_songs_per_artist=3, candidate_pool=50)
+
     print("\nTop Recommended Songs:")
     for i, ((song, artist), count) in enumerate(top_songs, start=1):
+        print(f"{i}. Song: {song}, Artist: {artist}, Occurrences: {count}")
+
+    print("\nDiversity-Aware Recommendations:")
+    for i, ((song, artist), count) in enumerate(top_diverse_songs, start=1):
         print(f"{i}. Song: {song}, Artist: {artist}, Occurrences: {count}")
 
     relevant_songs_info = playlist_tracks.get(pid, [])
