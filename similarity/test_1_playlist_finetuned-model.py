@@ -125,11 +125,11 @@ def get_top_songs_with_artists(similar_playlists, playlist_tracks, top_k=10):
 def get_diverse_top_songs_with_artists(similar_playlists, playlist_tracks, top_k=10, max_songs_per_artist=1, candidate_pool=50):
     song_counter = Counter()
 
-    for pid, _ in similar_playlists: ## loop through each tuple in similar playlists
+    for pid, sim in similar_playlists: ## loop through each tuple in similar playlists
         pid_str = str(pid) # convert to string 
         if pid_str in playlist_tracks: # check if the playlist id is present in playlist track dictionary
             for track_metadata in playlist_tracks[pid_str]: # loop through each track metadata in the playlist 
-                song_counter[(track_metadata["track_name"], track_metadata["artist_name"])] += 1 # increment count of that song and artist
+                song_counter[(track_metadata["track_name"], track_metadata["artist_name"])] += sim # increment count of that song and artist by similarity
 
     ranked_songs = song_counter.most_common(candidate_pool) # most common songs
 
