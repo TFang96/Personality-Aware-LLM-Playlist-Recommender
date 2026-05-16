@@ -1,8 +1,23 @@
-# Language Model-Based Playlist Generation Recommender
+# Improved Language Model-Based Playlist Generation Recommender
 
-This repository contains the implementation of a novel approach to **playlist generation using language models**. Our method leverages the **thematic coherence between playlist titles** and their tracks by creating **semantic clusters** from text embeddings. We **fine-tune a transformer model** on these clusters to generate playlists based on cosine similarity scores between known and unknown titles, utilizing a **voting mechanism** for final recommendations.
+This repository contains the updated implementation of a novel approach to **playlist generation using language models**. The original method leverages the **thematic coherence between playlist titles** and their tracks by creating **semantic clusters** from text embeddings. We **fine-tune a transformer model** on these clusters to generate playlists based on cosine similarity scores between known and unknown titles, utilizing a **voting mechanism** for final recommendations. Our improvements included addressng the diversity of recommendations and taking into consideration the relevance of similar playlists. 
+
+Presentation Video File: https://drive.google.com/file/d/1hTMvIEnfLVev8SV9CFMTM2YIU8qTGLQY/view?usp=drive_link
+Final Paper Link: https://drive.google.com/file/d/1G-inkjqkN1VK48Xepraf0DPBQkHDAPw1/view?usp=drive_link
+Final Paper File: Final_Paper.pdf
 
 The repository includes code for preprocessing, model training, evaluation, and generating recommendations. For more detail, please refer to the [paper](#citation) and the [slides](https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm).
+
+Required System Environment Variables:
+- CLUSTER_ANALYSIS
+- CLUSTER_CLEAN
+- CLUSTER_OUTPUT
+- CLUSTER_REPRESENT
+- CSV_OUTPUT
+- FINE_TUNE
+- MDP_INPUT
+- TRACKS_FILE
+- TRIPLET_MODEL
 
 <a href="https://docs.google.com/presentation/d/19_xvC7koVu5RhRtII5UlJrd_4xlBV8Nm/edit?usp=sharing&ouid=115943922619032699910&rtpof=true&sd=true"><img width="605" height="334" alt="Presentation @RecSys2025" src="https://github.com/user-attachments/assets/9a366394-2cde-47ec-9988-8ad6780813fc" /></a>
 
